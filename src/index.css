@@ -1,0 +1,73 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+@import "tailwindcss";
+body {
+  font-family: 'Montserrat', sans-serif;
+} 
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-30%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.scrolling-text {
+  animation: scroll-right 9s linear infinite;
+  
+}
+
+
+
+
+
+@media screen and (min-width: 1201px) {
+    .custom-toggle {
+      display: block;
+    }
+}
+.filter{
+  width:200px;
+}
+@media screen and (min-width: 991px){
+  .filter{
+    width:270px;
+   
+  }
+  .bp990-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bp990-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bp990-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .smallFooter{
+    display: none
+  }
+  .ptsort990{
+    padding-top:25px;
+  }
+  .ptfilter990{
+    padding-top: 50px;
+  }
+  
+  
+}
+@media  screen and (max-width:991px){
+  .header2{
+    display: none;
+  }
+  .largefooter{
+    display: none;
+  }
+  .numbers-sortby{
+    display: none;
+  }
+
+}
