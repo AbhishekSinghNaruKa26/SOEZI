@@ -9,7 +9,6 @@ const Auth = () => {
 
 
   const handleRegister = async(e)=>{
-    e.preventDefault();
     try {
 
       const res = await fetch('http://localhost:8080/api/register',{
@@ -105,6 +104,7 @@ const Auth = () => {
           <div>
             <input value={userName} onChange={(e)=>setUserName(e.target.value)} className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="text" placeholder='User Name' />
           </div>
+          <div>Hello</div>
 
           <div>
             <input value={email} onChange={(e)=>setEmail(e.target.value)} className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="email" placeholder='Email' />
