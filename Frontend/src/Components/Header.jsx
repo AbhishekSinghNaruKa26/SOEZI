@@ -29,6 +29,10 @@ function Header() {
     return setMenu(false);
     
   }
+
+  const[howTo , setHowTo]=useState([
+    'How To Apply -EziON ', 'How To Remove -EziOFF' , 'How To Reuse -SOEZI','How To Apply -ToEzi EziON','How To Remove -ToEzi EziOFF','How To Apply -KidEzi EziON'
+  ]);
   return (
     <>
       <div className="mainn ">
@@ -137,15 +141,41 @@ function Header() {
 
         <a href="">
           <div className="this2 px-2 font-normal ">
-         <button><a className="flex " href="">SHOP <IoIosArrowDown className="- text-[16px] ml-1" /> </a></button> <hr />
+         <button><a className="flex " href="">SHOP <IoIosArrowDown className=" text-[16px] ml-1" /> </a></button> <hr />
         </div>
         </a>
           <a className="flex p-2" href="">NAIL ART Edits</a>
           <a className="flex p-2" href="">NAIL CARE</a>
-          <div className="custom-toggle hidden xl:block flex items-center"><img className="h-[53px] m-8 w-[130px]" src="/SOEZI-LOGO.avif" alt="" /></div>
-          <a className="flex p-2" href="">ABOUT US <IoIosArrowDown className="- text-[16px] ml-1" /></a>
-          <a className="flex p-2" href="">HOW TO <IoIosArrowDown className="- text-[16px] ml-1" /></a>
-          <a className="flex p-2" href="">CONTACT US <IoIosArrowDown className="- text-[16px] ml-1" /></a>
+          <div className="custom-toggle hidden xl:flex items-center"><img className="h-[53px] m-8 w-[130px]" src="/SOEZI-LOGO.avif" alt="" /></div>
+
+          <div className="group relative  flex px-2 hover:border-b ">ABOUT US <IoIosArrowDown className=" text-[16px] ml-1" />
+          <div className="invisible bg-[#f9f0ff] pr-40 pl-5 py-8 left-[-20px] group-hover:visible   absolute top-11 z-50">
+            <ul className="leading-7 text-[#2c2c2c] font-normal text-[14px]">
+              <li>FAQ's</li>
+              <li>Blogs</li>
+            </ul>
+          </div>
+          </div>
+          
+
+          <div className="group relative flex p-2 hover:border-b" href="">HOW TO <IoIosArrowDown className="- text-[16px] ml-1" />
+          <div className="invisible group-hover:visible py-5 px-5  bg-[#f9f0ff] top-12.5 w-65 z-50 absolute">
+           {howTo.map((how)=>(
+            <ul className="leading-8 text-[#2c2c2c] font-normal tracking-normal text-[14px]" key={how}>
+              <li>{how}</li>
+            </ul>
+           ))}
+          </div>
+          </div>
+
+          <div className="group relative flex p-2 hover:border-b" href="">CONTACT US <IoIosArrowDown className="- text-[16px] ml-1" />
+          <div className="invisible group-hover:visible py-7 px-3  bg-[#f9f0ff] top-12.5 w-65 z-50 absolute ">
+            <ul className="leading-8 text-[#2c2c2c] font-normal tracking-normal text-[14px]">
+              <li>Distributed With Us</li>
+              <li>CUSTOMIZE YOUR DREAM NAIL</li>
+            </ul>
+          </div>
+          </div>
 
           <a className="flex p-2" href="">
             <div className="px-1  flex"><div onClick={()=>navigate('/login')} className="flex text-[22px] items-center"><CiUser /></div> </div>
@@ -164,69 +194,7 @@ function Header() {
 
 
 
-        {/* <div className="this1 px-2 flex  ">
-
-          <div className="text-2xl mt-2">
-            <button><IoIosSearch /></button>
-          </div>
-
-          <div className="this2 flex px-5">
-            <button>
-              <img src="" alt="" />
-              <h1>INDIA (INR )</h1>
-              </button>
-          </div>
-
-        </div>
-
-
-        <div className="this2 px-3 font-normal ">
-         <button><a className="flex " href="">SHOP <IoIosArrowDown className="- text-[16px] ml-1" /> </a></button> <hr />
-        </div>
-
-        <div className="this3 px-3 ">
-          <button><a className="flex" href="">NAIL & ART</a></button>
-        </div>
-
-
-        <div className="this4 px-3">
-          <button><a className="flex"  href="">NAIL CARE</a></button>
-        </div>
-
-
-        <div className="this5 px-3 ">
-          <button><a className="flex"  href="">ABOUT US <IoIosArrowDown className="- text-[16px] ml-1" /></a></button>
-        </div>
-
-
-        <div className="this6 px-3">
-          <button><a className="flex"  href="">HOW TO <IoIosArrowDown className="- text-[16px] ml-1" /></a></button>
-        </div>
-
-
-        <div className="this7 px-3 ">
-          <button><a className="flex"  href="">CONTACT US <IoIosArrowDown className="- text-[16px] ml-1" /></a></button>
-        </div>
-
-
-        <div className="this8 px-3  ">
-          <button>
-            <div className="px-1  flex"><div className="flex text-[22px] items-center"><CiUser /></div> </div>
-          </button>
-        </div>
-
-        <div className="this9 px-3">
-          <button>
-            <div className="pr-1  flex"><div className=" flex items-center"><FaRegHeart /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span></div>
-          </button>
-        </div>
-
-        <div className="this10 px-3">
-          <button>
-            <div className="px-1  flex"><div className="flex items-center"><SlBasket /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span> </div>
-          </button>
-        </div> */}
-
+       
         
 
       </div>

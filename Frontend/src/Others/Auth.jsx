@@ -9,6 +9,7 @@ const Auth = () => {
 
 
   const handleRegister = async(e)=>{
+    e.preventDefault();
     try {
 
       const res = await fetch('http://localhost:8080/api/register',{
@@ -22,17 +23,51 @@ const Auth = () => {
       const data =await res.json();
 
       if(res.ok){
+        alert("User Registered Successfully ");
         console.log("Registered SuccessFully" ,data);
-        
+        setUserName('');
+        setEmail('');
+        setPassword('');        
       }else{
-        console.error("Registered Failed",data.message);
-        
+        console.error("Registered Failed",data.message); 
       };
       
 
 
     } catch (error) {
-      console.error('Error ',error);
+      console.error('Error ',error);  
+    }
+  }
+
+  const handleLogin = async(e)=>{
+    e.preventDefault();
+
+    try {
+      console.log("Login Request Payload:", { email, password });
+
+      const res = await fetch('http://localhost:8080/api/login', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({email,password})
+      });
+
+      const data = await res.json();
+
+      if(res.ok){
+        alert('Login Successfull ',)
+        console.log("Login Successfully",data);
+        setEmail('');
+        setPassword('');
+        
+      }else{
+        alert(`Login Failed ${data.message}`);
+        console.error("Login Failed",data.message);  
+      };
+
+    } catch (error) {
+      console.error('Erorr : ',error);
       
     }
   }
@@ -43,7 +78,7 @@ const Auth = () => {
       {/* login form */}
       {!register ? 
        <div className=' py-10 bg-white rounded-xl border-black px-10'>
-        <form  action="">
+        <form onSubmit={handleLogin}  action="">
 
             <div className='flex justify-center'>
             <img className='h-15 w-35 ' src="SOEZI-LOGO.avif" alt="" />
@@ -56,11 +91,11 @@ const Auth = () => {
           </div>
 
           <div>
-            <input className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="email" placeholder='Email' />
+            <input value={email || ''} onChange={(e)=>setEmail(e.target.value)} className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="email" placeholder='Email' />
           </div>
 
           <div>
-            <input className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="password" placeholder='Password' />
+            <input value={password || ''} onChange={(e)=>setPassword(e.target.value)} className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="password" placeholder='Password' />
           </div>
 
           <div>
@@ -104,7 +139,7 @@ const Auth = () => {
           <div>
             <input value={userName} onChange={(e)=>setUserName(e.target.value)} className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="text" placeholder='User Name' />
           </div>
-          <div>Hello</div>
+          
 
           <div>
             <input value={email} onChange={(e)=>setEmail(e.target.value)} className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="email" placeholder='Email' />
@@ -134,56 +169,10 @@ const Auth = () => {
         </>
         }
      </form>
-     </div>
+      </div>
 
       }
-      {/* <div className=' py-10 bg-white rounded-xl border-black p-8'>
-        <form action="">
-
-    
-            <div className='flex justify-center'>
-            <img className='h-15 w-35 ' src="SOEZI-LOGO.avif" alt="" />
-            </div>
-     
-
-          <div className='pt-10'>
-            <h1 className='font-[500] text-[21px]'>Sign in </h1>
-            <h2 className='text-[14px] text-[#000000A8] pt-1.5'>Enter your email and we'll send you a verification code</h2>
-          </div>
-
-          <div>
-            <input className='border w-full mt-4 py-3 flex items-center pl-2 rounded' type="email" placeholder='Email' />
-          </div>
-
-          <div>
-            <button className='bg-blue-700 text-white w-full mt-3 py-2 rounded'>Countinue</button>
-          </div>
-
-          <div className='pt-3 flex justify-center'>
-            <p>Don't Have account <button type='button' value={register} onClick={()=>{setRegister(!register); console.log("hello");
-            }} className='text-blue-800  hover:border-b'>Register</button> </p>
-          </div>
-          
-
-
-          <div className='flex gap-3'>
-            <span><button className='text-blue-800 mt-4'>Privacy</button></span>
-            <span><button className='text-blue-800 mt-4' >Terms</button></span>
-          </div>
-
-          
-
-        </form>
-      </div> */}
-
-      {/* Register Form */}
-      {/* <form action="">
-        {register && 
-        <>
-        <div>hello</div>
-        </>
-        }
-     </form> */}
+      
 
     </div>
   )

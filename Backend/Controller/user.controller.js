@@ -3,6 +3,7 @@ import UserModel from "../Models/user.model.js";
 import sendEmail from '../config/sendmail.js';
 import VerifyEmailTemplate from '../utils/verifyEmailTemplate.js';
 import genrateAccessToken from '../utils/genrateAccessToken.js';
+import productModel from '../Models/product.model.js';
 
 
 
@@ -80,9 +81,9 @@ export const userController = async(req,res)=>{
 export const logincontroller = async(req,res)=>{
     try {
 
-        const {email , loginPassword}= req.body;
+        const {email , password}= req.body;
 
-        if(!email || ! loginPassword){
+        if(!email || !password){
             return res.status(400).json({
                 message:"Please Provide The email and password",
                 success:false,
@@ -108,7 +109,7 @@ export const logincontroller = async(req,res)=>{
             })
         }
 
-        const checkPassword = await bcryptjs.compare(loginPassword,User.password);
+        const checkPassword = await bcryptjs.compare(password,User.password);
 
         if(!checkPassword){
             return res.status(400).json({
@@ -144,6 +145,60 @@ export const logincontroller = async(req,res)=>{
     } catch (error) {
         return res.status(500).json({
             message:error.message || error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+
+export const addProductController = async(req ,res)=>{
+    try {
+        
+        const {image, title , rating , reviews , price , orignalPrice}=req.body;
+
+        if(!image || !title ||  !rating || !reviews || !price  || !orignalPrice){
+            return res.status(400).json({
+                message:"Please Provide The Title , Rating & Product Details",
+                error:true,
+                success:false,
+                product:newProduct
+            })
+        };
+
+        const newProduct = new productModel({image ,title , rating , reviews,  price, orignalPrice});
+        const save = await newProduct.save();
+
+        return res.json({
+            message:"Product Add Successfully",
+            error:false,
+            success:true
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message || error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+export const getAllProductController = async(req,res)=>{
+    try {
+        
+        const products = await productModel.find().sort({createdAt :1});
+
+        return res.json({
+            message:"All fine",
+            error:false,
+            success:true,
+            products
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message  || error,
             success:false,
             error:true
         })

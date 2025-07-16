@@ -13,7 +13,7 @@ import UserRouter from './Router/user.router.js';
 const app = express();
 app.use(cors({
     credentials:true,
-    origin:'http://localhost:5173'
+    origin:'*'
 }));
 app.use(express.json());
 app.use(cookieParser());

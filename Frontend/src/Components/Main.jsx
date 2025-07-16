@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaStar } from "react-icons/fa6";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { Range, getTrackBackground } from 'react-range';
+import axios from 'axios';
 
 
 
@@ -18,6 +19,7 @@ const Main = () => {
     const[showmore , setShowmore]=useState(false);
     const[sort , setSort]=useState(false);
     const[cols , setCols]=useState(3);
+    const[products , setProducts]=useState([]);
 
 
     
@@ -33,6 +35,20 @@ const Main = () => {
        
       setCols(num);
     };
+
+    useEffect(()=>{
+      axios.get('http://localhost:8080/api/getAll')
+      .then((res)=>{
+         console.log("DATA FROM BACKEND:", res.data);
+        setProducts(res.data.products);
+      })
+      .catch((error)=>{
+      
+        console.error("Error",error);
+        
+      });
+
+    },[])
 
   return (
 
@@ -482,23 +498,25 @@ const Main = () => {
      
      {/* porducts */}
         <div className={`products shrink-0 grow-0  grid grid-cols-2 ${cols===2 ? 'bp990-grid-2' : cols===3 ?'bp990-grid-3' : 'bp990-grid-4'} gap-8 px-4 pt-4 md:pt-18 ptsort990 `}  >
-        {/* First product */}
-        <div className='1 bg-[#f7f7f7] h-auto w-auto '>
+
+          {/* Demo 1st Product */}
+          {products.map((product , index)=>(
+              <div key={index} className='1 bg-[#f7f7f7] h-auto w-auto pb-2 '>
 
             <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img1.webp" alt="" />
+            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src={product.image} alt={product.title} />
             </div>
 
             <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
+                <div className='title flex justify-center'>
+                    <a className='text-[14px] mt-1' href="">{product.title}</a>
                 </div>
 
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
+                <div className='rating flex justify-center'>
+                    <span className=' flex justify-center mt-1 h-5 '>
                         <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
                     </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
+                    <span className='text-[10px] mt-2 pl-2'>{product.reviews}</span>
                 </div>
 
                 <div className='flex justify-center'>
@@ -507,8 +525,8 @@ const Main = () => {
 
                 <div className='product-price mt-2'>
                    <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
+                    <span className='text-pink-500 text-[15px] pr-4'>Rs.{product.price}</span>
+                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs.{product.orignalPrice}</span>
                    </div>
                 </div>
 
@@ -516,390 +534,8 @@ const Main = () => {
 
         </div>
 
-        {/* 2nd Product  */}
-
-         <div className='2 bg-[#f7f7f7]  h-auto w-auto '>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img2.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 3rd Product */}
-
-         <div className='3 bg-[#f7f7f7]   h-auto w-auto '>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img3.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 4th Product */}
-
-         <div className='4 bg-[#f7f7f7]   h-auto w-auto '>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img4.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 5th Product */}
-
-         <div className='5 bg-[#f7f7f7]  h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img5.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 6th Product */}
-
-        <div className='5 bg-[#f7f7f7]  h-auto w-auto '>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img6.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 7th Product */}
-
-        <div className='5 bg-[#f7f7f7]   h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img7.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 8th Product */}
-
-        <div className='5 bg-[#f7f7f7]   h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img8.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {/* 9th product */}
-        <div className='5 bg-[#f7f7f7]   h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img8.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div> 
-
-        {/* 10th product */}
-
-        <div className='5 bg-[#f7f7f7]   h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img8.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div> 
-
-        {/* 11th product */}
-
-        <div className='5 bg-[#f7f7f7]   h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img8.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div> 
-
-        {/* 12th product */}
-
-        <div className='5 bg-[#f7f7f7]   h-auto w-auto'>
-
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src="img8.webp" alt="" />
-            </div>
-
-            <div className='product'>
-                <div className='flex justify-center'>
-                    <a className='text-[14px] mt-1' href="">Dress to Impress</a>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='flex justify-center mt-1 h-5 '>
-                        <FaStar className='h-5 w-4.5 pl-0.5' /><FaStar className='h-5 w-4.5 pl-0.5' /><FaStar  className='h-5 pl-0.5 w-4.5' /><FaStar  className='h-5 w-4.5 pl-0.5' /><FaRegStarHalfStroke  className='h-5 w-4.5 pl-0.5' />
-                    </span>
-                    <span className='text-[10px] mt-2 pl-2'>20</span>
-                </div>
-
-                <div className='flex justify-center'>
-                    <span className='text-[10px] mt-1'>reviews</span>
-                </div>
-
-                <div className='product-price mt-2'>
-                   <div className=' flex justify-center'>
-                    <span className='text-pink-500 text-[15px] pr-4'>Rs. 799</span>
-                    <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs. 999</span>
-                   </div>
-                </div>
-
-            </div>
-
-        </div> 
-
+          ))}
+       
         </div>
 
 
