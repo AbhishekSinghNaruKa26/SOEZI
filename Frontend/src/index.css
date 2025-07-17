@@ -1,9 +1,20 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
 @import "tailwindcss";
+
 body {
   font-family: 'Montserrat', sans-serif;
 } 
+
+@font-face {
+  font-family: 'VillageStylish';
+  src: url('/Font/Stylish.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.heading {
+  font-family: 'VillageStylish', sans-serif;
+}
 
 @keyframes scroll-right {
   0% {

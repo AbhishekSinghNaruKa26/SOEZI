@@ -7,12 +7,14 @@ import { IoCloseOutline } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import { CiUser } from "react-icons/ci";
 import MenuComponent from "../Others/MenuComponent";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 function Header() {
   const [announceBtn, setAnnounceBtn] = useState(true);
   const [menu , setMenu]=useState(false);
+  const location = useLocation();
+  const isWishList = location.pathname === '/wishlist';
 
 
   const announceToggle = () => {
@@ -182,7 +184,7 @@ function Header() {
           </a>
 
           <a className="flex p-2" href="">
-            <div className="relative pr-1  flex"><div className=" flex text-[20px] font-normal items-center"><FaRegHeart /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm absolute left-3.5 bottom-1.5  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span></div>
+            <div className="relative pr-1  flex"><div onClick={()=>navigate('/wishlist')} className=" flex text-[20px] font-normal items-center"><FaRegHeart /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm absolute left-3.5 bottom-1.5  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span></div>
           </a>
 
 
@@ -203,7 +205,7 @@ function Header() {
 
         
         {/* scorllBar part-3 */}
-        <div className="relative overflow-hidden whitespace-nowrap h-[34px] md:h-[52px] py-1.5 md:py-3 bg-[#F3F1F3] text-[#fe7bbf] text-[15px] md:text-[16px] z-0">
+        <div className={`${isWishList ? 'hidden' : ''} relative overflow-hidden whitespace-nowrap h-[34px] md:h-[52px] py-1.5 md:py-3 bg-[#F3F1F3] text-[#fe7bbf] text-[15px] md:text-[16px] z-0`}>
         <div className="absolute flex scrolling-text">
         <div className="flex">
         <span className="px-5">EZI NOURISH &amp; STRENGTHEN</span>

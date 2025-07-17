@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { FaStar } from "react-icons/fa6";
+import { FaRegHeart, FaStar } from "react-icons/fa6";
 import { FaRegStarHalfStroke } from "react-icons/fa6";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { Range, getTrackBackground } from 'react-range';
 import axios from 'axios';
-
+import { FaHeart } from "react-icons/fa";
 
 
 
@@ -49,6 +49,20 @@ const Main = () => {
       });
 
     },[])
+
+
+    
+    const[wishListId , setWishListId]=useState([]);
+
+
+
+    const handleWishListId = (id)=>{
+      console.log("Id" ,id);
+      
+      setWishListId(prev=>
+        prev.includes(id) ? prev.filter(item => item!==id) : [...prev,id]
+      )
+    }
 
   return (
 
@@ -503,8 +517,11 @@ const Main = () => {
           {products.map((product , index)=>(
               <div key={index} className='1 bg-[#f7f7f7] h-auto w-auto pb-2 '>
 
-            <div className='img  '>
-            <img className='h-auto max-h-[260px] max-w-[260px] w-full rounded-t-3xl ' src={product.image} alt={product.title} />
+            <div className='img relative '>
+            <div key={product._id}  onClick={()=>{handleWishListId(product._id)}} className={`absolute text-lg top-5 text-white right-2.5  `}>{wishListId.includes(product._id) ?<FaHeart className='text-black'/> : <FaRegHeart/> }</div>
+          
+            <img className=' h-auto max-h-[260px]  max-w-[260px] w-full rounded-t-3xl ' src={product.image} alt={product.title} />
+            
             </div>
 
             <div className='product'>

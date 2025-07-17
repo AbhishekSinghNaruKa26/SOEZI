@@ -5,6 +5,7 @@ import Filterr from './Components/Filterr'
 import Main from './Components/Main'
 import Footer from './Components/Footer'
 import Auth from './Others/Auth';
+import WishList from './Others/WishList';
 
 
 function App() {
@@ -26,6 +27,15 @@ function App() {
         } />
         
         <Route path='/login' element={<Auth />} />
+
+        <Route path='/wishlist' element={
+          <>
+          <Header/>
+          <WishList/>
+          <Footer/>
+          </>
+        } 
+        />
 
       </Routes>
     </Router>
