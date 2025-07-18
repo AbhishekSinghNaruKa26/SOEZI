@@ -4,6 +4,8 @@ import sendEmail from '../config/sendmail.js';
 import VerifyEmailTemplate from '../utils/verifyEmailTemplate.js';
 import genrateAccessToken from '../utils/genrateAccessToken.js';
 import productModel from '../Models/product.model.js';
+import wishListModel from '../Models/wishList.js';
+import genrateRefreshToken from '../utils/genrateRefreshToken.js';
 
 
 
@@ -119,8 +121,8 @@ export const logincontroller = async(req,res)=>{
             })
         }
 
-        const accessToken = await genrateAccessToken(User._id);
-        const refreshToken = await genrateAccessToken(User._id);
+        const accessToken = await genrateAccessToken({userId :User._id});
+        const refreshToken = await genrateRefreshToken(User._id)
 
         const cookieOption = { 
             httpOnly : true,
@@ -137,9 +139,42 @@ export const logincontroller = async(req,res)=>{
         return res.json({
             message:"User Login Successfully",
             error:false,
-            success:true
+            success:true,
+            user:{
+                id:User._id,
+                email:User.email,
+                name:User.userName
+            }
         })
 
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message || error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+export const logoutController = async(req,res)=>{
+    try {
+        
+        const cookieOption= {
+            httpOnly:true,
+            secure:true,
+            sameSite:"None"
+        }
+
+        res.clearCookie('accessToken',cookieOption);
+        res.clearCookie('refreshToken',cookieOption);
+
+        return res.json({
+            message:"User Logout Successfully",
+            error:false,
+            success:true
+        })
 
 
     } catch (error) {
@@ -199,6 +234,69 @@ export const getAllProductController = async(req,res)=>{
     } catch (error) {
         return res.status(500).json({
             message:error.message  || error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+export const addToWishListController = async (req,res)=>{
+    try {
+
+        const{ productId, image , title , price , orignalPrice}=req.body;
+      
+        if (!productId) {
+      return res.status(400).json({
+        message: "productId is required",
+        success: false,
+        error: true,
+      });
+    }
+
+     console.log("REQ.BODY", req.body);
+    console.log("User ID from Token:", req.userId);
+        
+
+
+        const newItem = new wishListModel({userId:req.userId , productId , image , title ,price, orignalPrice});
+        const save= await newItem.save();
+        console.log("Save Product" , save);
+
+        return res.json({
+            message:"Item added To WishList",
+            success:true,
+            error:false
+        });
+        
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message || error,
+            success: false,
+            error:true
+        })
+    }
+}
+
+export const getWishListController = async(req,res)=>{
+    try {
+
+        
+
+        const wishListItem = await wishListModel.find({userId:req.userId});
+        console.log("Itmes" , wishListItem);
+        
+        return res.json({
+            message : "Items Found Successfully",
+            error:false,
+            success:true,
+            itmes:wishListItem
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message || error,
             success:false,
             error:true
         })

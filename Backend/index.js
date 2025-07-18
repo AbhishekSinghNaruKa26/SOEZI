@@ -9,15 +9,15 @@ import Connectdb from './config/ConnectDb.js';
 import UserRouter from './Router/user.router.js';
 
 
-
+const allowedOrigins = ['https://soezi-90lm2xjof-abhisheks-projects-427066be.vercel.app/', 'http://localhost:5173'];
 const app = express();
 app.use(cors({
     credentials:true,
-    origin:'*'
+    origin:allowedOrigins
 }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan());
+app.use(morgan("dev"));
 app.use(helmet({
     crossOriginResourcePolicy:false
 }));

@@ -4,7 +4,7 @@ import UserModel from '../Models/user.model.js';
 dotenv.config();
 
 
-const genrateRefreshToken = async( userId)=>{
+const genrateRefreshToken = async(userId)=>{
   
         
         const token = jwt.sign({id:userId},
