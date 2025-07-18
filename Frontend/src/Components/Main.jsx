@@ -54,6 +54,7 @@ const Main = () => {
     
     const[wishListId , setWishListId]=useState([]);
 
+    
 
 
     const handleWishListId = (id)=>{
@@ -72,7 +73,7 @@ const Main = () => {
     <div className=' flex justify-center px-6 gap-8'>
 
         {/* Filter For large devices */}
-        <div className='filter hidden md:block ml-4 shrink-0 grow-0  text-[15px]  text-[#202025]  pt-5  ptfilter990  px-4'>
+        <div  className='filter hidden md:block ml-4 shrink-0 grow-0  text-[15px]  text-[#202025]  pt-5  ptfilter990  px-4'>
 
     
             <div className='text-xl  pb-6 flex justify-start font-[500]'>Filter :</div><hr className='text-gray-300' />
