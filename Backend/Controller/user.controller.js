@@ -190,7 +190,8 @@ export const logoutController = async(req,res)=>{
 export const addProductController = async(req ,res)=>{
     try {
         
-        const {image, title , rating , reviews , price , orignalPrice}=req.body;
+        const { title , rating , reviews , price , orignalPrice}=req.body;
+        const image = req.file ? `/uploads/${req.file.filename}` : null;
 
         if(!image || !title ||  !rating || !reviews || !price  || !orignalPrice){
             return res.status(400).json({
