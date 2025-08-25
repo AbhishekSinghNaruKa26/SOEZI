@@ -21,7 +21,7 @@ const ProductPage = () => {
     const fetchProducts = async()=>{
         try {
 
-            const res =  await axios.get('http://localhost:8080/api/getAll');
+            const res =  await axios.get('http://localhost:8080/api/getAll')
             setProducts(res.data.products);
             
 
@@ -29,34 +29,35 @@ const ProductPage = () => {
             console.error("Error",error)
         }
 
-    }
+      }
+  
+      useEffect(()=>{
+       fetchProducts();
+      },[])
 
-        // add a product 
-        const handleAddProducts = async()=>{
-            try {
+     const handleAddProducts = async(e)=>{
+      try {
+        e.preventDefault();
+        const req = await axios.post('http://localhost:8080/api/product',formData);
+        console.log("Product Added :",req.data);
+        fetchProducts();
+        setShowForm(false);            // Form ko band kar de
+    setFormData({                  // Form ko clear kar de
+      image: '',
+      title: '',
+      rating: '',
+      reviews: '',
+      price: '',
+      orignalPrice: ''
+    });
 
-                await axios.post('http://localhost:8080/api/product' ,{
-                    image:formData.image,
-                    title:formData.title,
-                    rating:parseFloat(formData.rating),
-                    reviews:parseFloat(formData.reviews),
-                    price:parseFloat(formData.price),
-                    orignalPrice:parseFloat(formData.orignalPrice)
-                });
 
-                setShowForm(false);
-                setFormData({title:'' ,rating:'' , price:'' });
-                fetchProducts();
+      } catch (error) {
+        console.log("Error",error);
+        
+      }
+     } 
 
-
-            } catch (error) {
-                console.error("Error",error)
-            }
-        }
-
-        useEffect(()=>{
-            fetchProducts();
-        },[])
 
 
   return (
@@ -81,8 +82,7 @@ const ProductPage = () => {
                 <input type="text"
                        placeholder='Image Url'
                        className='block rounded border px-2 w-full border-black py-1 my-2'
-                       value={formData.image}
-                       onChange={(e)=>setFormData({...formData,image:e.target.value})}
+                       onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                 />
 
 
@@ -154,7 +154,7 @@ const ProductPage = () => {
             {products.map((product , index)=>(
                 <div key={index} className='bg-gray-300 mt-2 rounded-xl px-4 py-2 flex justify-between  '>
                     <div className=''>{product.image}</div>
-                    <div className='w-65 '>{product.title}</div>
+                    <div className='w-25 '>{product.title}</div>
                     <div className='w-10'>{product.price}</div>
                     <div className=''>{product.orignalPrice}</div>
                     <div>
