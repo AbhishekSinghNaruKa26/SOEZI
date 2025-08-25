@@ -1,4 +1,5 @@
 import bcryptjs from 'bcryptjs';
+import Razorpay from 'razorpay';
 import UserModel from "../Models/user.model.js";
 import sendEmail from '../config/sendmail.js';
 import VerifyEmailTemplate from '../utils/verifyEmailTemplate.js';
@@ -6,6 +7,11 @@ import genrateAccessToken from '../utils/genrateAccessToken.js';
 import productModel from '../Models/product.model.js';
 import wishListModel from '../Models/wishList.js';
 import genrateRefreshToken from '../utils/genrateRefreshToken.js';
+import AddToCartModel from '../Models/AddToCart.js';
+import paymentModel from '../Models/payment.model.js';
+
+
+
 
 
 
@@ -94,6 +100,8 @@ export const logincontroller = async(req,res)=>{
         };
 
         const User = await UserModel.findOne({email});
+        console.log("user", User);
+        
 
         if(!User){
             return res.status(400).json({
@@ -140,6 +148,7 @@ export const logincontroller = async(req,res)=>{
             message:"User Login Successfully",
             error:false,
             success:true,
+            token:accessToken,
             user:{
                 id:User._id,
                 email:User.email,
@@ -190,25 +199,28 @@ export const logoutController = async(req,res)=>{
 export const addProductController = async(req ,res)=>{
     try {
         
-        const { title , rating , reviews , price , orignalPrice}=req.body;
-        const image = req.file ? `/uploads/${req.file.filename}` : null;
+        const {image ,title , rating , reviews , price , orignalPrice}=req.body;
+       
 
         if(!image || !title ||  !rating || !reviews || !price  || !orignalPrice){
             return res.status(400).json({
                 message:"Please Provide The Title , Rating & Product Details",
                 error:true,
                 success:false,
-                product:newProduct
+                
             })
         };
 
-        const newProduct = new productModel({image ,title , rating , reviews,  price, orignalPrice});
+        const newProduct = await new productModel({image ,title , rating , reviews,  price, orignalPrice});
         const save = await newProduct.save();
+        console.log("Save",save);
+        
 
         return res.json({
             message:"Product Add Successfully",
             error:false,
-            success:true
+            success:true,
+            product:newProduct
         });
 
     } catch (error) {
@@ -244,33 +256,62 @@ export const getAllProductController = async(req,res)=>{
 export const addToWishListController = async (req,res)=>{
     try {
 
-        const{ productId, image , title , price , orignalPrice}=req.body;
-      
-        if (!productId) {
-      return res.status(400).json({
-        message: "productId is required",
-        success: false,
-        error: true,
-      });
-    }
-
-     console.log("REQ.BODY", req.body);
-    console.log("User ID from Token:", req.userId);
+        const{productId}=req.body;
+        console.log("Received productId:", productId);
+        console.log("user Id",req.userId);
         
 
+        if(!productId){
+            return res.status(400).json({
+                message:"Please Provide The Product Id",
+                error:true,
+                success:false
+            })
+        };
 
-        const newItem = new wishListModel({userId:req.userId , productId , image , title ,price, orignalPrice});
-        const save= await newItem.save();
-        console.log("Save Product" , save);
+        const product = await productModel.findById(productId);
+        console.log("product",product);
+        
+                                                                                      
+        if(!product){
+            return res.status(400).json({
+                message:"Product Not Found",
+                error:true,
+                success:false
+            })
+        };
+
+        const existing = await wishListModel.findOne({userId:req.userId , productId});
+
+        if(existing){
+            return res.status(200).json({
+                message:"Product Already Added ",
+                error:true,
+                success:false,
+                alreadyExists:true
+            })
+        };
+
+        const newItem = await new wishListModel({
+            userId:req.userId,
+            productId:product._id
+        });
+
+        const save = await newItem.save();
+        console.log("Save ", save);
 
         return res.json({
-            message:"Item added To WishList",
+            message:"Item Added To WishList Succesfully",
+            error:false,
             success:true,
-            error:false
-        });
+            items:save
+
+        })
+        
         
 
     } catch (error) {
+        console.error("❌ Error in addToWishListController:", error.message || error);
         return res.status(500).json({
             message:error.message || error,
             success: false,
@@ -283,15 +324,14 @@ export const getWishListController = async(req,res)=>{
     try {
 
         
-
-        const wishListItem = await wishListModel.find({userId:req.userId});
+        const wishListItem = await wishListModel.find({userId:req.userId}).populate('productId');
         console.log("Itmes" , wishListItem);
         
         return res.json({
-            message : "Items Found Successfully",
+            message : "Items Added Successfully",
             error:false,
             success:true,
-            itmes:wishListItem
+            items:wishListItem
         })
 
 
@@ -299,6 +339,166 @@ export const getWishListController = async(req,res)=>{
         return res.status(500).json({
             message:error.message || error,
             success:false,
+            error:true
+        })
+    }
+}
+
+export const deleteWishListController = async(req,res)=>{
+    try {
+        
+        const deletee = await wishListModel.findOneAndDelete({userId:req.userId , productId:req.params.id});
+        console.log("Delete : ",deletee);
+
+        return res.json({
+            message:"Product Deleted Successfully",
+            success:true,
+            error:false
+        })
+
+
+        
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message || error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+export const addToCartController = async(req,res)=>{
+    try {
+        
+        const {productId} = req.body ;
+
+        if(!productId){
+            return res.status(400).json({
+                message : "Please Provide The ProductId",
+                error:true,
+                success:false
+            })
+        }
+
+        const productTOCart = await productModel.findById(productId);
+        console.log("Product available in the cart :",productTOCart);
+
+        const newItem =  await AddToCartModel({
+            userId:req.userId,
+            productId:productTOCart._id
+        })
+        
+        const save = await newItem.save();
+        console.log("Item in The Cart : " ,save);
+
+        return res.json({
+            message:"Item added To the successfully",
+            success:true,
+            error:false,
+            save
+        })
+        
+
+    } catch (error) {
+        console.log("Error",error);
+        return res.status(500).json({
+            message:error.message || error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+export const getToCartController = async(req,res)=>{
+    try {
+
+       const cartProduct =  await AddToCartModel.find({userId:req.userId}).populate('productId');
+       console.log("Cart Product  : ", cartProduct);
+
+       return res.json({
+        message:"Item Added To Cart Successfully",
+        success:true,
+        error:false,
+        items:cartProduct
+       });
+        
+        
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message|| error,
+            success:false,
+            error:true
+        })
+    }
+}
+
+export const deleteCartController = async(req,res)=>{
+    try {
+        
+       const deletee =  await AddToCartModel.findOneAndDelete({userId:req.userId , _id:req.params.id});
+       console.log("Deleting from cart with userId:", req.userId, "and productId:", req.params.id);
+
+
+       return res.json({
+        message:"Product Deleted Successfully",
+        error:false,
+        success:true
+       })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message:error.message || error,
+            error:true,
+            success:false
+        })
+    }
+
+}
+
+const razorpay = new Razorpay({
+    key_id:process.env.RAZORPAY_KEY_ID,
+    key_secret:process.env.RAZORPAY_KEY_SECRET
+})
+
+export const createPaymentOrderController = async(req,res)=>{
+    try {
+        const { amount } = req.body;  // ✅ destructuring
+    console.log("Request Body: ", req.body);
+        const options = {
+            amount : amount*100,
+            currency:"INR",
+            receipt:`receipt${Date.now()}`
+        };
+
+        if (!amount) {
+      return res.status(400).json({ error: "Amount is required" });
+    }
+        const order = await razorpay.orders.create(options);
+        console.log("Order :",order);
+
+        const payment = new paymentModel({
+            orderId:order.id,
+            amount:options.amount,
+            currency:options.currency,
+            status:"Created"
+        });
+        await payment.save();
+
+        return res.json({
+            message: "Order Created Successfully",
+            success:true ,
+            error:false,
+            order
+        })
+        
+
+    } catch (error) {
+        console.error("Payment Error:", error.message);
+        return res.status(500).json({
+            message:error.message || error,
+            success : false,
             error:true
         })
     }

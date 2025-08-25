@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import Connectdb from './config/ConnectDb.js';
 import UserRouter from './Router/user.router.js';
-import path from 'path';
+
 
 
 
@@ -21,23 +21,15 @@ const allowedOrigins = [
 ];
 const app = express();
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
+    credentials:true,
+    origin:allowedOrigins
 }));
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(helmet({
     crossOriginResourcePolicy:false
 }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 const PORT = 8080 || process.env.PORT;
@@ -48,7 +40,7 @@ app.get('/',(req,res)=>{
     })
 })
 
-app.use('/api',UserRouter)
+app.use('/api',UserRouter);
 
 Connectdb().then(()=>{
     app.listen(PORT,()=>{
