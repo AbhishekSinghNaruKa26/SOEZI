@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaAngleLeft, FaAngleRight,FaRegHeart } from "react-icons/fa";
 import { HiBars3 } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
@@ -8,13 +8,19 @@ import { IoIosArrowDown } from "react-icons/io";
 import { CiUser } from "react-icons/ci";
 import MenuComponent from "../Others/MenuComponent";
 import { useLocation, useNavigate } from "react-router-dom";
+import WishListl from "../Others/WishList";
+import AddToCart from "../Others/AddToCart";
+import Main from './Main'
 
 
-function Header() {
+function Header({ wishListl , isCartOpen , setIsCartOpen  }) {
+   console.log("wishlist in header", wishListl);
   const [announceBtn, setAnnounceBtn] = useState(true);
   const [menu , setMenu]=useState(false);
   const location = useLocation();
   const isWishList = location.pathname === '/wishlist';
+ 
+
 
 
   const announceToggle = () => {
@@ -32,12 +38,18 @@ function Header() {
     
   }
 
+
+  
+
+
   const[howTo , setHowTo]=useState([
     'How To Apply -EziON ', 'How To Remove -EziOFF' , 'How To Reuse -SOEZI','How To Apply -ToEzi EziON','How To Remove -ToEzi EziOFF','How To Apply -KidEzi EziON'
   ]);
   return (
     <>
+    
       <div className="mainn ">
+        
          
         {/* Announcement Or Part -1 */}
 
@@ -184,12 +196,22 @@ function Header() {
           </a>
 
           <a className="flex p-2" href="">
-            <div className="relative pr-1  flex"><div onClick={()=>navigate('/wishlist')} className=" flex text-[20px] font-normal items-center"><FaRegHeart /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm absolute left-3.5 bottom-1.5  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span></div>
+            <div className="relative pr-1  flex"><div onClick={()=>navigate('/wishlist')} className=" flex text-[20px] font-normal items-center"><FaRegHeart /></div>
+            
+            {wishListl &&  
+            <>
+              <span className="bg-[#fe7bbf] p-2 text-white text-sm absolute left-3.5 bottom-1.5  h-4  w-4 justify-center flex items-center  rounded-full  ">{wishListl.length}</span>
+             </>
+            }
+          
+            </div>
           </a>
 
 
-          <a className="flex p-2" href="">
-            <div className="relative px-1  flex"><div className="flex text-[20px] items-center"><SlBasket /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm absolute left-4.5 bottom-1.5  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span> </div>
+          <a className="flex p-2">
+            <div onClick={()=>setIsCartOpen(!isCartOpen)}
+             className="relative px-1  flex"><div className="flex text-[20px] items-center"><SlBasket /></div><span className="bg-[#fe7bbf] p-2 text-white text-sm absolute left-4.5 bottom-1.5  h-4  w-4 justify-center flex items-center  rounded-full  ">0</span> 
+             </div>
           </a>
           
         </div>
@@ -221,6 +243,9 @@ function Header() {
     </div>
   </div>
         </div>
+        
+
+     
 
 
 
@@ -231,4 +256,4 @@ function Header() {
     </>
   );
 }
-export default Header;
+export default React.memo(Header);

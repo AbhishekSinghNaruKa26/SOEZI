@@ -6,10 +6,11 @@ import { IoIosArrowDown } from "react-icons/io";
 import { Range, getTrackBackground } from 'react-range';
 import axios from 'axios';
 import { FaHeart } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 
 
-const Main = () => {
+const Main = ({ fetchWishlist }) => {
 
     const[price , setPrice]=useState(true);
     const[shape , setShape]=useState(true);
@@ -30,11 +31,6 @@ const Main = () => {
     const items = ["Featured" , "Best selling" , "Alphabetically A-Z", "Alphabetically Z-A", "Price, low to high","Price, high to low","Date, old to new","Date, new to old"];
     const[selected , setSelected]=useState(items[1]);
 
-    const handleimgbutton=(num)=>{
-       console.log("Clicked column:", num);
-       
-      setCols(num);
-    };
 
     useEffect(()=>{
       axios.get('http://localhost:8080/api/getAll')
@@ -50,20 +46,74 @@ const Main = () => {
 
     },[])
 
-
+  
+    const[wishListItem , setWishListItem]=useState([]);
+    const token = localStorage.getItem("token");
     
-    const[wishListId , setWishListId]=useState([]);
+    const handleWishListId = async(productIdd)=>{
+      try {
+        
+        if(wishListItem.includes(productIdd)){
+          axios.delete(`http://localhost:8080/api/wishlist/${productIdd}`,
+            {
+              headers:{
+                Authorization:`Bearer ${token}`
+              }
+            });
+            setWishListItem(prev=>prev.filter(id => id != productIdd))
+            console.log(productIdd);
+            
+           
+        }
+        else{
+          const res = axios.post('http://localhost:8080/api/wishlist',
+            {productId : productIdd},
+            {
+              headers:{
+                Authorization:`Bearer ${token}`
+              }
+            })
+              if (res?.data?.alreadyExists === true) {
+        alert("This product is already in your wishlist!");
+      } else {
+        setWishListItem((prev) => [...prev, productIdd]);
+        console.log("Added to wishlist:", productIdd);
+      }
+          }
 
-    
+           fetchWishlist();
 
 
-    const handleWishListId = (id)=>{
-      console.log("Id" ,id);
-      
-      setWishListId(prev=>
-        prev.includes(id) ? prev.filter(item => item!==id) : [...prev,id]
-      )
+      } catch (error) {
+        console.log("Error" , error)
+      }
     }
+
+    const addTOCart = async(producttId)=>{
+      try {
+        
+        const res = await axios.post('http://localhost:8080/api/addToCart',
+          {productId : producttId},
+          {
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          })
+          console.log("res :",res.data);
+          console.log("Hello");
+
+      } catch (error) {
+        console.log("Error :",error)
+
+      }
+    }
+
+    const navigate = useNavigate();
+
+    const handleimgbutton = (frame)=>{
+      setCols(frame);
+    }
+    
 
   return (
 
@@ -511,7 +561,7 @@ const Main = () => {
       </div>
 
      
-     {/* porducts */}
+     {/* products */}
         <div className={`products shrink-0 grow-0  grid grid-cols-2 ${cols===2 ? 'bp990-grid-2' : cols===3 ?'bp990-grid-3' : 'bp990-grid-4'} gap-8 px-4 pt-4 md:pt-18 ptsort990 `}  >
 
           {/* Demo 1st Product */}
@@ -519,9 +569,9 @@ const Main = () => {
               <div key={index} className='1 bg-[#f7f7f7] h-auto w-auto pb-2 '>
 
             <div className='img relative '>
-            <div key={product._id}  onClick={()=>{handleWishListId(product._id)}} className={`absolute text-lg top-5 text-white right-2.5  `}>{wishListId.includes(product._id) ?<FaHeart className='text-black'/> : <FaRegHeart/> }</div>
+            <div key={product._id}  onClick={()=>{handleWishListId(product._id)}} className={`absolute text-lg top-5 text-white right-2.5  `}>{wishListItem.includes(product._id) ?<FaHeart className='text-black'/> : <FaRegHeart/> }</div>
           
-            <img className=' h-auto max-h-[260px]  max-w-[260px] w-full rounded-t-3xl ' src={`/${product.image}`} alt={product.title} />
+            <img onClick={()=>navigate('/ProductShopping')} className=' h-auto max-h-[260px]  max-w-[260px] w-full rounded-t-3xl ' src={`/${product.image}`} alt={product.title} />
             
             </div>
 
@@ -546,6 +596,11 @@ const Main = () => {
                     <span className='text-pink-500 text-[15px] pr-4'>Rs.{product.price}</span>
                     <span className='text-[12px] text-gray-600 mt-0.5 line-through'>Rs.{product.orignalPrice}</span>
                    </div>
+
+                   <div onClick={()=>addTOCart(product._id)} className='flex justify-center mt-2'>
+                    <button className='bg-pink-400 text-white rounded-2xl  px-2 py-1'>Add To Cart </button>
+                   </div>
+
                 </div>
 
             </div>

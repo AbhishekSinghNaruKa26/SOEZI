@@ -45,7 +45,7 @@ const Auth = () => {
     try {
       console.log("Login Request Payload:", { email, password });
 
-      const res = await fetch('http://localhost:8080/api/login', {
+      const res = await fetch('http://localhost:8080/api/loginso', {
         method:'POST',
         headers:{
           'Content-Type':'application/json'
@@ -53,11 +53,14 @@ const Auth = () => {
         body:JSON.stringify({email,password})
       });
 
+
       const data = await res.json();
 
       if(res.ok){
         alert('Login Successfull ',)
         console.log("Login Successfully",data);
+        localStorage.setItem("token", data.token);
+        console.log("Login Response:", data.token);
         setEmail('');
         setPassword('');
         

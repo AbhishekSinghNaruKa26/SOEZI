@@ -3,8 +3,11 @@
 
 @import "tailwindcss";
 
-body {
+html,body {
   font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+
 } 
 
 @font-face {
@@ -31,6 +34,14 @@ body {
   
 }
 
+/* hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 
 
