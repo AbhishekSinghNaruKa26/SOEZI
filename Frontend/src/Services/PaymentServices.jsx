@@ -1,11 +1,14 @@
 import axios from "axios";
 
 
-const handlePayment  = async()=>{
+
+
+const handlePayment  = async(amount)=>{
+
     try {
         
         const {data} = await axios.post('http://localhost:8080/api/order',{
-            amount:799 ,
+            amount 
         });
         console.log("Data : ", data);
         

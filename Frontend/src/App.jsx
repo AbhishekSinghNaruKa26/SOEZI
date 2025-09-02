@@ -1,15 +1,16 @@
 import {BrowserRouter as Router , Routes , Route } from 'react-router-dom';
-import {FaUser} from 'react-icons/fa'
+
 import Header from './Components/Header'
 import Filterr from './Components/Filterr'
 import Main from './Components/Main'
 import Footer from './Components/Footer'
 import Auth from './Others/Auth';
 import WishList from './Others/WishList';
-import React ,{useEffect, useState} from 'react';
+import React,  {useEffect, useState} from 'react';
 import axios from 'axios';
 import AddToCart from './Others/AddToCart';
 import ProductShopping from './Others/ProductShopping';
+import { CartProvider } from "./Services/CartContext";
 
 
 function App() {
@@ -87,14 +88,18 @@ useEffect(() => {
 
       {isCartOpen && 
       <>
+      
       <div onClick={()=>setIsCartOpen(!isCartOpen)} className='absolute inset-0 bg-black opacity-40 backdrop-blur-sm z-40'></div>
 
       <div className='absolute overflow-hidden  right-0 top-0 h-screen  w-[450px] bg-white shadow-lg z-50'>
+        <CartProvider>
         <AddToCart isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen}/>
+        </CartProvider>
       </div>
       </>
       }
-
+      
+       
 
     </Router>
 

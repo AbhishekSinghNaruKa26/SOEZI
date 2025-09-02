@@ -2,57 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { RxCross1 } from "react-icons/rx";
 import { FaShippingFast } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import axios from 'axios';
 import handlePayment from '../Services/PaymentServices.jsx'
+import {useCart} from '../Services/CartContext.jsx'
 
 const AddToCart = ({ isCartOpen, setIsCartOpen }) => {
 
-  const[products , setProducts]=useState([]);
-  const token = localStorage.getItem('token');
-
-  const getProducts = async()=>{
-    try {
-      
-      const res =await axios.get('http://localhost:8080/api/getCart',{
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      });
-      console.log("Res : ",res);
-      console.log("Res.Data :",res.data);
-      console.log("res.data.item : ",res.data.items);
-      
-      
-      
-      setProducts(res.data.items || []);
-
-    } catch (error) {
-      console.error("Error : ",error);
-    }
-  }
-  useEffect(()=>{
-    getProducts();
-  },[]);
-
-  const deleteCart = async(productIdd)=>{
-    try {
-      
-      const res = await axios.delete(`http://localhost:8080/api/deleteCart/${productIdd}`,
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        })
-        console.log("res : " , res);
-        console.log("ProductId : ",productIdd)
-
-        setProducts(prev => prev.filter(item => item._id != productIdd));
-
-    } catch (error) {
-      console.error("Error : ",error);
-    }
-  }
-
+  const {cart , deleteCartItem , totalAmount }= useCart();
 
   return (
 
@@ -79,7 +34,7 @@ const AddToCart = ({ isCartOpen, setIsCartOpen }) => {
     {/* for Product  */}
     <div className='overflow-y-auto h-120' >
 
-      {products.map((product , index)=>(
+      {cart.map((product , index)=>(
       <div key={index} className='flex   gap-2 mx-12 pt-12 text-sm tracking-wide border-b-2 border-gray-600 pb-6'>
 
       <div className='h-[80px] w-[80px] '><img className='rounded-xl' src={product.productId.image} alt="Image Not found" /></div>
@@ -108,7 +63,7 @@ const AddToCart = ({ isCartOpen, setIsCartOpen }) => {
       
       </div>
 
-      <span onClick={()=>deleteCart(product._id)} className='absolute right-12'>
+      <span onClick={()=>deleteCartItem(product._id)} className='absolute right-12'>
         <RiDeleteBin6Line className='text-lg mt-1' />
       </span>
 
@@ -130,7 +85,7 @@ const AddToCart = ({ isCartOpen, setIsCartOpen }) => {
 
       <div className='text-green-800 font-bold py-2'>5% OFF on Prepaid Orders</div>
 
-      <div onClick={handlePayment} className='bg-black px-4 py-3 rounded-xl  text-white flex justify-between w-full'> 
+      <div onClick={()=>handlePayment(totalAmount)} className='bg-black px-4 py-3 rounded-xl  text-white flex justify-between w-full'> 
         <span>Checkout</span>
         <span>images  </span>
       </div>
