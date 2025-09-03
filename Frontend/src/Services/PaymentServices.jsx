@@ -13,10 +13,9 @@ const handlePayment  = async(amount)=>{
         console.log("Data : ", data);
         
         
-        
         const options = {
             key:"rzp_test_R8Hg31978rMnia",
-            orderId:data.order.id,
+            order_id:data.order.id,
             currency:"INR",
             decription:"Test Transaction",
             name:"SOEZI.in",
@@ -24,10 +23,12 @@ const handlePayment  = async(amount)=>{
             handler:async function (response) {
                 console.log("Payment Successfull",response);
                
-               await axios.post('http://localhost:8080/api/verify ',{
+               await axios.post('http://localhost:8080/api/verify',{
                 razorpay_order_id:response.razorpay_order_id,
                 razorpay_payment_id:response.razorpay_payment_id,
-                razorpay_signature:response.razorpay_signature
+                razorpay_signature:response.razorpay_signature,
+                amount:response.order.amount,
+                currency : "INR" 
                }) 
             },
             prefill:{
