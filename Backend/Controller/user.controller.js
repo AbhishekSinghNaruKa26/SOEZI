@@ -9,6 +9,7 @@ import wishListModel from '../Models/wishList.js';
 import genrateRefreshToken from '../utils/genrateRefreshToken.js';
 import AddToCartModel from '../Models/AddToCart.js';
 import paymentModel from '../Models/payment.model.js';
+import crypto from 'crypto';
 
 
 
@@ -500,6 +501,63 @@ export const createPaymentOrderController = async(req,res)=>{
             message:error.message || error,
             success : false,
             error:true
+        })
+    }
+}
+
+export const verifyPaymentController  = async(req, res)=>{
+    try {
+        
+        const {razorpay_order_id , razorpay_payment_id , razorpay_signature , amount} = req.body ; 
+
+        if(!razorpay_order_id || !razorpay_payment_id || !razorpay_signature){
+            return res.status(400).json({
+                message : "Please Provide All The Required Fields ", 
+                success : false , 
+                error : true 
+            })
+        };
+
+        const sign = razorpay_order_id + '|' + razorpay_payment_id ; 
+
+        const expectedSign = crypto
+        .createHmac('sha256' , process.env.RAZORPAY_KEY_SECRET)
+        .update(sign.toString())
+        .digest('hex')
+        console.log("Expected Sign :" , expectedSign);
+        
+
+        if(expectedSign === razorpay_signature){
+            const payment = new paymentModel({
+                orderId:razorpay_order_id,
+                paymentId: razorpay_payment_id,
+                signature:razorpay_signature,
+                amount:amount,
+                currency:"INR",
+                status:"Paid"
+            })
+            await payment.save();
+
+            return res.json({
+                message : "Payment Verify Successfully ",
+                error : false , 
+                success : true , 
+                payment 
+            })
+        }else{
+            return res.status(400).json({
+                message : "Invalid Signature", 
+                success : false , 
+                error : true 
+            })
+        }
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            success : false,
+            error: true
         })
     }
 }

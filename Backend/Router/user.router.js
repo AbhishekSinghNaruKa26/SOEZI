@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { addProductController, addToCartController, addToWishListController, createPaymentOrderController, deleteCartController, deleteWishListController, getAllProductController,  getToCartController,  getWishListController, logincontroller, logoutController, userController } from '../Controller/user.controller.js';
+import { addProductController, addToCartController, addToWishListController, createPaymentOrderController, deleteCartController, deleteWishListController, getAllProductController,  getToCartController,  getWishListController, logincontroller, logoutController, userController, verifyPaymentController } from '../Controller/user.controller.js';
 import authMiddleware from '../Middleware/authMiddleware.js';
 
 
@@ -18,6 +18,7 @@ UserRouter.post('/addToCart' ,authMiddleware,addToCartController);
 UserRouter.get('/getCart',authMiddleware,getToCartController);
 UserRouter.delete('/deleteCart/:id' , authMiddleware , deleteCartController );
 UserRouter.post('/order', createPaymentOrderController);
+UserRouter.post('/verify' , verifyPaymentController);
 
 
     
