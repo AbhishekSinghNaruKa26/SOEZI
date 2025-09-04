@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { RxCross1 } from "react-icons/rx";
 import { FaShippingFast } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";

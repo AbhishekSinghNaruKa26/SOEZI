@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { FaAngleLeft, FaAngleRight,FaRegHeart } from "react-icons/fa";
 import { HiBars3 } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
 import { SlBasket } from "react-icons/sl";
-import { IoCloseOutline } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import { CiUser } from "react-icons/ci";
 import MenuComponent from "../Others/MenuComponent";
 import { useLocation, useNavigate } from "react-router-dom";
-import WishListl from "../Others/WishList";
-import AddToCart from "../Others/AddToCart";
-import Main from './Main'
+import { useOpen } from "../Context/StateProvider";
+import SearchProduct from "../Others/SearchProduct";
+
 
 
 function Header({ wishListl , isCartOpen , setIsCartOpen  }) {
+
+  const{open , setOpen} = useOpen();
+
    console.log("wishlist in header", wishListl);
   const [announceBtn, setAnnounceBtn] = useState(true);
   const [menu , setMenu]=useState(false);
@@ -114,7 +116,7 @@ function Header({ wishListl , isCartOpen , setIsCartOpen  }) {
              
             }
             </div>
-            <div className="px-1">  <IoIosSearch /></div>
+            <div onClick={()=>setOpen(!open)} className="px-1">  <IoIosSearch /></div>
           </div>
          
 
@@ -141,8 +143,9 @@ function Header({ wishListl , isCartOpen , setIsCartOpen  }) {
           <div className="this1 p-1 flex  ">
 
           <div className="text-2xl mt-2">
-            <button><IoIosSearch /></button>
+            <button onClick={()=>setOpen(!open)}><IoIosSearch /></button>
           </div>
+          
 
           <div className="this2 flex px-3">
             <button>
