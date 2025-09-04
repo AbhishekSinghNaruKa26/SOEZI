@@ -561,3 +561,43 @@ export const verifyPaymentController  = async(req, res)=>{
         })
     }
 }
+
+
+export const searchProductController = async(req,res)=>{
+    try {
+
+        const query  = req.query.q || req.query.query ;
+
+        if(!query){
+            return res.status(400).json({
+                message  : "Please Provide The Query",
+                success : false , 
+                error : true
+            })
+        }
+
+        const product = await productModel.find({
+            title:{$regex :query , $options:"i"}
+        
+        })
+          console.log("Query:", query);
+        console.log("Products : " , product);
+
+        return res.json({
+            
+            message : "Product Found Successfully",
+            error : false ,
+            sucess : true,
+            product:product
+        })
+         
+
+    } catch (error) {
+                console.error("Search API Error:", error);   
+        return res.status(500).json({
+            message: error.message || error , 
+            success :false ,
+            error : true
+        })
+    }
+}
