@@ -10,6 +10,9 @@ import genrateRefreshToken from '../utils/genrateRefreshToken.js';
 import AddToCartModel from '../Models/AddToCart.js';
 import paymentModel from '../Models/payment.model.js';
 import crypto from 'crypto';
+import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
+
 
 
 
@@ -200,10 +203,10 @@ export const logoutController = async(req,res)=>{
 export const addProductController = async(req ,res)=>{
     try {
         
-        const {image ,title , rating , reviews , price , orignalPrice}=req.body;
+        const { title , rating , reviews , price , orignalPrice}=req.body;
        
 
-        if(!image || !title ||  !rating || !reviews || !price  || !orignalPrice){
+        if(!req.file || !title ||  !rating || !reviews || !price  || !orignalPrice){
             return res.status(400).json({
                 message:"Please Provide The Title , Rating & Product Details",
                 error:true,
@@ -212,7 +215,13 @@ export const addProductController = async(req ,res)=>{
             })
         };
 
-        const newProduct = await new productModel({image ,title , rating , reviews,  price, orignalPrice});
+        const uploadResult = await cloudinary.uploader.upload(req.file.path ,{
+            folder : "SOEZI Products",
+             resource_type: "auto",
+        })
+        console.log("Cloudinary Upload:", uploadResult);
+
+        const newProduct =  new productModel({image :uploadResult.secure_url ,title , rating , reviews,  price, orignalPrice});
         const save = await newProduct.save();
         console.log("Save",save);
         
@@ -598,6 +607,44 @@ export const searchProductController = async(req,res)=>{
             message: error.message || error , 
             success :false ,
             error : true
+        })
+    }
+}
+
+
+export const cloudinaryImageUploadController = async(req, res)  =>{
+    try {
+
+        const file = req.file ; 
+
+        if(!file){
+            return res.status(400).json({
+                message : "Please Provide The File",
+                success : false , 
+                error : true
+            })
+        };
+
+        const result = await cloudinary.uploader.upload(file.path ,{
+            folder:'SOEZI.IN',
+        });
+
+        fs.unlinkSync(file.path);
+
+
+        return res.json({
+            message: "Image Uploaded Sucessfully",
+            sucess : true,
+            error: false,
+            url: result.secure_url,
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error ,
+            sucess: false , 
+            error: true
+
         })
     }
 }
