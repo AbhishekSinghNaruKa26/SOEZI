@@ -7,6 +7,7 @@ const ProductPage = () => {
     
     const[showForm , setShowForm]=useState(false);
     const[products  ,setProducts]=useState([])
+    const [image , setImage] = useState(null);
     const[formData , setFormData]=useState({
         image:'',
         title:'',
@@ -14,13 +15,13 @@ const ProductPage = () => {
         reviews:'',
         price:'',
         orignalPrice:''
-    });
+    }); 
 
 
 //fetch all products from backend
     const fetchProducts = async()=>{
         try {
-
+        
             const res =  await axios.get('http://localhost:8080/api/getAll')
             setProducts(res.data.products);
             
@@ -38,18 +39,28 @@ const ProductPage = () => {
      const handleAddProducts = async(e)=>{
       try {
         e.preventDefault();
-        const req = await axios.post('http://localhost:8080/api/product',formData);
+         const data = new FormData();
+    data.append("image", image); // file
+    data.append("title", formData.title);
+    data.append("rating", formData.rating);
+    data.append("reviews", formData.reviews);
+    data.append("price", formData.price);
+    data.append("orignalPrice", formData.orignalPrice);
+
+        const req = await axios.post('http://localhost:8080/api/product',data,{
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         console.log("Product Added :",req.data);
         fetchProducts();
         setShowForm(false);            // Form ko band kar de
-    setFormData({                  // Form ko clear kar de
-      image: '',
+    setFormData({                  // Form ko clear kar de,
       title: '',
       rating: '',
       reviews: '',
       price: '',
       orignalPrice: ''
     });
+    setImage(null);
 
 
       } catch (error) {
@@ -79,10 +90,11 @@ const ProductPage = () => {
 
               <div>
 
-                <input type="text"
+                <input type='file'
                        placeholder='Image Url'
                        className='block rounded border px-2 w-full border-black py-1 my-2'
-                       onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                       accept='image/*'
+                       onChange={(e) => setImage(e.target.files[0])}
                 />
 
 
@@ -153,7 +165,8 @@ const ProductPage = () => {
 
             {products.map((product , index)=>(
                 <div key={index} className='bg-gray-300 mt-2 rounded-xl px-4 py-2 flex justify-between  '>
-                    <div className=''>{product.image}</div>
+                    <div className=''><img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded" />
+</div>
                     <div className='w-25 '>{product.title}</div>
                     <div className='w-10'>{product.price}</div>
                     <div className=''>{product.orignalPrice}</div>
