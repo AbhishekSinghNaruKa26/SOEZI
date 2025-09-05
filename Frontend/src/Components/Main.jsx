@@ -571,7 +571,7 @@ const Main = ({ fetchWishlist }) => {
             <div className='img relative '>
             <div key={product._id}  onClick={()=>{handleWishListId(product._id)}} className={`absolute text-lg top-5 text-white right-2.5  `}>{wishListItem.includes(product._id) ?<FaHeart className='text-black'/> : <FaRegHeart/> }</div>
           
-            <img onClick={()=>navigate('/ProductShopping')} className=' h-auto max-h-[260px]  max-w-[260px] w-full rounded-t-3xl ' src={`/${product.image}`} alt={product.title} />
+            <img onClick={()=>navigate('/ProductShopping')} className=' h-auto max-h-[260px]  max-w-[260px] w-full rounded-t-3xl ' src={product.image} alt={product.title} />
             
             </div>
 
