@@ -216,7 +216,7 @@ export const addProductController = async(req ,res)=>{
         };
 
         const uploadResult = await cloudinary.uploader.upload(req.file.path ,{
-            folder : "SOEZI Products",
+            folder : "SOEZI_Products",
              resource_type: "auto",
         })
         console.log("Cloudinary Upload:", uploadResult);
